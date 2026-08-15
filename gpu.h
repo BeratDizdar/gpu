@@ -40,7 +40,7 @@ struct IGPUDevice {
     // format:
     // [0, 3]   = {RGBA8, RGBA4, RGB5_A1, RGBA2}
     // (3, ???] = impl extension
-    virtual void NewTexture(int id, int format, int w, int h, void *data) = 0;
+    virtual void NewTexture(int id, int format, int w, int h, const void *data) = 0;
     // filter:
     // [0, 1]   = {NEAREST, LINEAR}
     // (1, ???] = impl extension
@@ -48,18 +48,9 @@ struct IGPUDevice {
 
     // data float* veriliyor varsayılıyor şuanlık
     // merak etmeyin çok hızlı değiştireceğim sonrasında bu durumu
-    virtual void NewBuffer(int id, size_t size, void *data) = 0;
-    virtual void UpdateBuffer(int id, size_t offset, size_t size, void *data) = 0;
+    virtual void NewBuffer(int id, size_t size, const void *data) = 0;
+    virtual void UpdateBuffer(int id, size_t offset, size_t size, const void *data) = 0;
     virtual void BindBuffer(int id, int slot) = 0;
-
-    // normalde bu execute içinde type'ın tipi topology_t olacaktı fakat int
-    // demeyi daha uygun gördüm zira implemente edenler desteğine göre içeride
-    // planlayıp dışarıya bunu söyleyebilir
-    // count parametresi aslında vertex_id gibi olacak
-    // type:
-    // [0, 2]   = {POINTS, LINES, TRIANGLES}
-    // (2, ???] = impl extension
-    virtual void Execute(int type, int count) = 0;
 
     // ve burada da implemente edenler istediği shaderi arkada impl etsinler
     // diye böyle yaptım.
@@ -68,15 +59,50 @@ struct IGPUDevice {
     // ne olduğuna, bu hem iyi hem kötü.
     // nihai çözümü bu apiye özgü bir SHADER IR olması. fakat henüz yapamam.
     // bu nedenle şuanlık böyle olması yeterli
-    virtual void CreatePipeline(int id, int shader_count, void **shader) = 0;
+    virtual void NewPipeline(int id, int shader_count, void **shader) = 0;
     virtual void CurrentPipeline(int id) = 0;
 
+    // normalde bu execute içinde type'ın tipi topology_t olacaktı fakat int
+    // demeyi daha uygun gördüm zira implemente edenler desteğine göre içeride
+    // planlayıp dışarıya bunu söyleyebilir
+    // count parametresi aslında vertex_id gibi olacak
+    // type:
+    // [0, 2]   = {POINTS, LINES, TRIANGLES}
+    // (2, ???] = impl extension
+    virtual void Draw(int type, int count) = 0;
+    virtual void Compute(int num_groups_x, int num_groups_y, int num_groups_z) = 0;
+    virtual void MemoryBarrier(void) = 0;
+
     // opengl ise zaten hatayı kendi içinde verir.
-    virtual void Present() = 0;
+    virtual void Present(void) = 0;
 };
 
-extern "C" IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *t);
+extern "C" IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r);
 
 #else
-#error "C kullanma henüz :P ;)"
+
+typedef struct {
+    const char *(*QueryProps)();
+    void (*Scissor)(int x, int y, int w, int h);
+    void (*Viewport)(int x, int y, int w, int h);
+    void (*Clear)(uint32_t r, uint32_t g, uint32_t b);
+    void (*NewTexture)(int id, int format, int w, int h, const void *data);
+    void (*BindTexture)(int id, int slot, int filter);
+    void (*NewBuffer)(int id, size_t size, const void *data);
+    void (*UpdateBuffer)(int id, size_t offset, size_t size, const void *data);
+    void (*BindBuffer)(int id, int slot);
+    void (*NewPipeline)(int id, int shader_count, void **shader);
+    void (*CurrentPipeline)(int id);
+    void (*Draw)(int type, int count);
+    void (*Compute)(int num_groups_x, int num_groups_y, int num_groups_z);
+    void (*MemoryBarrier)(void);
+    void (*Present)(void);
+} IGPUDeviceVirtualTable;
+
+typedef struct {
+    IGPUDeviceVirtualTable *vtbl;
+} IGPUDevice;
+
+IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r);
+
 #endif
