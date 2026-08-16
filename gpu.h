@@ -72,36 +72,39 @@ struct IGPUDevice {
     // (2, ???] = impl extension
     virtual void Draw(int type, int count) = 0;
     virtual void Compute(int num_groups_x, int num_groups_y, int num_groups_z) = 0;
-    virtual void MemoryBarrier(void) = 0;
+    virtual void MemoryBarrier() = 0;
 
     // opengl ise zaten hatayı kendi içinde verir.
-    virtual void Present(void) = 0;
+    virtual void Present() = 0;
 };
 
 extern "C" IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r);
 
 #else
 
-typedef struct {
-    const char *(*QueryProps)();
-    void (*Scissor)(int x, int y, int w, int h);
-    void (*Viewport)(int x, int y, int w, int h);
-    void (*Clear)(uint8_t r, uint8_t g, uint8_t b);
-    void (*NewTexture)(int id, int format, int w, int h, const void *data);
-    void (*BindTexture)(int id, int slot, int filter);
-    void (*NewBuffer)(int id, size_t size, const void *data);
-    void (*UpdateBuffer)(int id, size_t offset, size_t size, const void *data);
-    void (*BindBuffer)(int id, int slot);
-    void (*NewPipeline)(int id, int shader_count, void **shader);
-    void (*CurrentPipeline)(int id);
-    void (*Draw)(int type, int count);
-    void (*Compute)(int num_groups_x, int num_groups_y, int num_groups_z);
-    void (*MemoryBarrier)(void);
-    void (*Present)(void);
-} IGPUDeviceVirtualTable;
+struct IGPUDevice;
 
 typedef struct {
+    const char *(*QueryProps)(struct IGPUDevice *self);
+    void (*Scissor)(struct IGPUDevice *self, int x, int y, int w, int h);
+    void (*Viewport)(struct IGPUDevice *self, int x, int y, int w, int h);
+    void (*Clear)(struct IGPUDevice *self, uint8_t r, uint8_t g, uint8_t b);
+    void (*NewTexture)(struct IGPUDevice *self, int id, int format, int w, int h, const void *data);
+    void (*BindTexture)(struct IGPUDevice *self, int id, int slot, int filter);
+    void (*NewBuffer)(struct IGPUDevice *self, int id, size_t size, const void *data);
+    void (*UpdateBuffer)(struct IGPUDevice *self, int id, size_t offset, size_t size, const void *data);
+    void (*BindBuffer)(struct IGPUDevice *self, int id, int slot);
+    void (*NewPipeline)(struct IGPUDevice *self, int id, int shader_count, void **shader);
+    void (*CurrentPipeline)(struct IGPUDevice *self, int id);
+    void (*Draw)(struct IGPUDevice *self, int type, int count);
+    void (*Compute)(struct IGPUDevice *self, int num_groups_x, int num_groups_y, int num_groups_z);
+    void (*MemoryBarrier)(struct IGPUDevice *self);
+    void (*Present)(struct IGPUDevice *self);
+} IGPUDeviceVirtualTable;
+
+typedef struct IGPUDevice {
     IGPUDeviceVirtualTable *vtbl;
+    void *internal;
 } IGPUDevice;
 
 IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r);
