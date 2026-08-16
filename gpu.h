@@ -18,6 +18,7 @@ verebilecek.
 
 typedef struct { // devamını düşüneceğim bir ara
     impl_diff void*(*get_proc_address)(const char*);
+    impl_diff void *native_window;
     guaranteed(256) uint16_t min_texture_slot;
     guaranteed(256) uint16_t min_pipeline_slot;
 } device_request_t;
@@ -33,7 +34,7 @@ struct IGPUDevice {
     // basit yapılar işte
     virtual void Scissor(int x, int y, int w, int h) = 0;
     virtual void Viewport(int x, int y, int w, int h) = 0;
-    virtual void Clear(uint32_t r, uint32_t g, uint32_t b) = 0;
+    virtual void Clear(uint8_t r, uint8_t g, uint8_t b) = 0;
 
     // format tipleri olarak unsigned int mi kullanmalıyım yoksa formata göre
     // değişiyor mu???
@@ -85,7 +86,7 @@ typedef struct {
     const char *(*QueryProps)();
     void (*Scissor)(int x, int y, int w, int h);
     void (*Viewport)(int x, int y, int w, int h);
-    void (*Clear)(uint32_t r, uint32_t g, uint32_t b);
+    void (*Clear)(uint8_t r, uint8_t g, uint8_t b);
     void (*NewTexture)(int id, int format, int w, int h, const void *data);
     void (*BindTexture)(int id, int slot, int filter);
     void (*NewBuffer)(int id, size_t size, const void *data);

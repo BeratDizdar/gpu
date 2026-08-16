@@ -16,7 +16,7 @@ static const char *impl__QueryProps();
 static void impl__Scissor(int x, int y, int w, int h);
 static void impl__Viewport(int x, int y, int w, int h);
 
-static void impl__Clear(uint32_t r, uint32_t g, uint32_t b) {
+static void impl__Clear(uint8_t r, uint8_t g, uint8_t b) {
     glClearColor(r/255.0f, g/255.0f, b/255.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
