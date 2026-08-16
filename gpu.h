@@ -19,8 +19,9 @@ verebilecek.
 typedef struct { // devamını düşüneceğim bir ara
     impl_diff void*(*get_proc_address)(const char*);
     impl_diff void *native_window;
-    guaranteed(256) uint16_t min_texture_slot;
-    guaranteed(256) uint16_t min_pipeline_slot;
+    guaranteed(256) uint16_t min_buffer_objects;
+    guaranteed(256) uint16_t min_texture_objects;
+    guaranteed(256) uint16_t min_pipeline_objects;
 } device_request_t;
 
 #ifdef __cplusplus

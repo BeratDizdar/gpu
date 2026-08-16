@@ -103,3 +103,37 @@
 #define GL_TRIANGLES_ADJACENCY            0x000C
 #define GL_TRIANGLE_STRIP_ADJACENCY       0x000D
 #define GL_PATCHES                        0x000E
+
+/* glCreateTextures */
+#define GL_TEXTURE_1D                     0x0DE0
+#define GL_TEXTURE_2D                     0x0DE1
+#define GL_TEXTURE_3D                     0x806F
+#define GL_TEXTURE_1D_ARRAY               0x8C18
+#define GL_TEXTURE_2D_ARRAY               0x8C1A
+
+/* glTextureStorage2D */
+#define GL_RGBA2                          0x8055 //RGB
+#define GL_RGBA4                          0x8056 //RGB
+#define GL_RGB5_A1                        0x8057 //RGBA
+#define GL_RGBA8                          0x8058 //RGBA
+
+/* glTextureSubImage2D */
+#define GL_RGB                            0x1907
+#define GL_RGBA                           0x1908
+
+/* gl types */
+#define GL_FLOAT                          0x1406
+
+/* glSamplerParameteri */
+#define GL_TEXTURE_MAG_FILTER             0x2800
+#define GL_TEXTURE_MIN_FILTER             0x2801
+#define GL_TEXTURE_WRAP_S                 0x2802
+#define GL_TEXTURE_WRAP_T                 0x2803
+
+/* glSamplerParameteri */
+#define GL_NEAREST                        0x2600
+#define GL_LINEAR                         0x2601
+#define GL_NEAREST_MIPMAP_NEAREST         0x2700
+#define GL_LINEAR_MIPMAP_NEAREST          0x2701
+#define GL_NEAREST_MIPMAP_LINEAR          0x2702
+#define GL_LINEAR_MIPMAP_LINEAR           0x2703
