@@ -1,8 +1,5 @@
-#import <Metal/Metal.h>
-#import <QuartzCore/QuartzCore.h>
-#import <Quartz/Quartz.h>
-#import <Cocoa/Cocoa.h>
-#import "../gpu.h"
+#include "gpu_mtl_defs.h"
+#import "../../gpu.h"
 
 static id<MTLDevice> device;
 static id<MTLCommandQueue> queue;
@@ -15,12 +12,12 @@ static id<MTLBuffer> Buffer[256];
 static MTLRenderPassDescriptor *pass;
 static bool encoder_open = NO;
 
-void mtl__Scissor(int x, int y, int w, int h) {
+void mtl__Scissor(struct IGPUDevice *self, int x, int y, int w, int h) {
     MTLScissorRect rect = { (NSUInteger)x, (NSUInteger)y, (NSUInteger)w, (NSUInteger)h };
     [encoder setScissorRect:rect];
 }
 
-void mtl__Clear(uint8_t r, uint8_t g, uint8_t b) {
+void mtl__Clear(struct IGPUDevice *self, uint8_t r, uint8_t g, uint8_t b) {
     drawable = [layer nextDrawable];
     cb = [queue commandBuffer];
 
@@ -34,17 +31,17 @@ void mtl__Clear(uint8_t r, uint8_t g, uint8_t b) {
     encoder_open = YES;
 }
 
-void mtl__NewBuffer(int id, size_t size, const void *data) {
+void mtl__NewBuffer(struct IGPUDevice *self, int id, size_t size, const void *data) {
     Buffer[id] = data
         ? [device newBufferWithBytes:data length:size options:MTLResourceStorageModeShared]
         : [device newBufferWithLength:size options:MTLResourceStorageModeShared];
 }
 
-void mtl__BindBuffer(int id, int slot) {
+void mtl__BindBuffer(struct IGPUDevice *self, int id, int slot) {
     [encoder setVertexBuffer:Buffer[id] offset:0 atIndex:slot];
 }
 
-void mtl__Present(void) {
+void mtl__Present(struct IGPUDevice *self) {
     [encoder endEncoding];
     [cb presentDrawable:drawable];
     [cb commit];
@@ -56,11 +53,12 @@ static IGPUDeviceVirtualTable table = {
     .Clear = mtl__Clear,
     .NewBuffer = mtl__NewBuffer,
     .BindBuffer = mtl__BindBuffer,
-    .Present = mtl__Present
+    .Present = mtl__Present,
 };
 
 static struct {
     IGPUDevice device[16];
+    IDataMTL idata[16];
     uint32_t top;
 } DeviceArray;
 
@@ -76,8 +74,8 @@ IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r) {
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     layer.framebufferOnly = YES;
     layer.frame = view.bounds;
-
     view.layer = layer;
+
 
     if (DeviceArray.top <= 15) {
         IGPUDevice *dev = &DeviceArray.device[DeviceArray.top++];

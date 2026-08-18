@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stddef.h>
 
 typedef struct {
     uint8_t *heap_data;
@@ -52,7 +53,7 @@ void *GPUX_LoadShaderToMemory(const char *path) {
     fclose(i);
 
     if (ptr != NULL) {
-        printf("GPUX_SHADER: [%s] (%d byte)\n", path, len);
+        printf("GPUX_SHADER: [%s] (%zu byte)\n", path, len);
     }
 
     return (void*)ptr;
