@@ -1,27 +1,7 @@
-#include "../gpu.h"
+#include "../../gpu.h"
 #define GLUTILS_IMPL
-#include "opengl46/miniglcorearb.h"
-
-typedef struct {uint32_t bank[256];} buffer_t;
-typedef struct {uint32_t bank[256];} texture_t;
-typedef struct {
-    uint32_t bank[256];
-    uint32_t vert[256];
-    uint32_t frag[256];
-    uint32_t comp[256];
-    uint32_t current;
-} pipeline_t;
-typedef struct {
-    uint32_t nearest;
-    uint32_t linear;
-} sampler_t;
-
-typedef struct { /* INTERNAL DATA */
-    buffer_t Buffer;
-    texture_t Texture;
-    pipeline_t Pipeline;
-    sampler_t Sampler;
-} IData;
+#include "loader/miniglcorearb.h"
+#include "gpu_gl_defs.h"
 
 
 //##############################################################################
@@ -137,7 +117,13 @@ static void impl__Draw(struct IGPUDevice *self, int type, int count) {
 }
 
 static void impl__Compute(struct IGPUDevice *self, int num_groups_x, int num_groups_y, int num_groups_z) {
-    glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
+    pipeline_t *p = &((IData*)self->internal)->Pipeline;
+    if (p->comp[p->current] != 0) {
+        glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
+    }
+    else {
+        return;
+    }
 }
 
 static void impl__MemoryBarrier(struct IGPUDevice *self) {

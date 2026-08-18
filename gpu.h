@@ -14,7 +14,7 @@ verebilecek.
 #include <stddef.h>
 #define guaranteed(_count) /* impl'da garanti edilen */
 #define optional /* opsiyonel argüman */
-#define impl_diff /* sadece opengl istediği için */
+#define impl_diff
 
 typedef struct { // devamını düşüneceğim bir ara
     impl_diff void*(*get_proc_address)(const char*);
