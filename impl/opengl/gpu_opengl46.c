@@ -173,6 +173,9 @@ static struct {
 IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r) {
     gluLoadLibrary(r->get_proc_address);
     gluBindDummyVAO();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     if (DeviceArray.top <= 15) {
         IGPUDevice *device = &DeviceArray.device[DeviceArray.top];
         device->vtbl = &table;

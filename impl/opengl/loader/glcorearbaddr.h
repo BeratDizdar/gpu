@@ -47,7 +47,12 @@
     X(glGenVertexArrays, (int32_t n, uint32_t *array)) \
     X(glBindVertexArray, (uint32_t array))
 
+#define GLCOREARBADDR_STATE \
+    X(glEnable, (uint32_t cap)) \
+    X(glBlendFunc, (uint32_t src, uint32_t dst))
+
 #define GLCOREARBADDR \
+    GLCOREARBADDR_STATE \
     GLCOREARBADDR_CLEAR \
     GLCOREARBADDR_TEXTURES \
     GLCOREARBADDR_BUFFERS \
