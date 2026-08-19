@@ -8,7 +8,7 @@ typedef struct {
     size_t size_of_bytes;
 } GPUX_Texture;
 
-GPUX_Texture GPUX_LoadTextureToMemory(const char *path);
+GPUX_Texture GPUX_LoadTextureToMemory(const char *path, int flip);
 void *GPUX_LoadShaderToMemory(const char *path);
 
 #ifdef GPUX_IMPL
@@ -19,9 +19,11 @@ void *GPUX_LoadShaderToMemory(const char *path);
 #include <stdio.h>
 #include <stdlib.h>
 
-GPUX_Texture GPUX_LoadTextureToMemory(const char *path) {
+GPUX_Texture GPUX_LoadTextureToMemory(const char *path, int flip) {
     GPUX_Texture tex;
     int comp;
+
+    stbi_set_flip_vertically_on_load(flip);
 
     tex.heap_data = stbi_load(path, &tex.width, &tex.height, &comp, 4);
     if (tex.heap_data != NULL) {

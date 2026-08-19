@@ -31,8 +31,14 @@ static void impl__NewTexture(struct IGPUDevice *self, int id, int format, int w,
         glDeleteTextures(1, &t->bank[id]);
     }
     glCreateTextures(GL_TEXTURE_2D, 1, &t->bank[id]);
-    glTextureStorage2D(t->bank[id], 0, format, w, h);
-    glTextureSubImage2D(t->bank[id], 0, 0, 0, w, h, GL_RGBA, GL_FLOAT, data);
+    uint32_t iformat;
+    if (format == 0) iformat = GL_RGBA8;
+    else if (format == 1) iformat = GL_RGBA4;
+    else if (format == 2) iformat = GL_RGB5_A1;
+    else if (format == 3) iformat = GL_RGBA2;
+    else iformat = GL_RGBA8;
+    glTextureStorage2D(t->bank[id], 1, iformat, w, h);
+    glTextureSubImage2D(t->bank[id], 0, 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
 static void impl__BindTexture(struct IGPUDevice *self, int id, int slot, int filter) {
@@ -172,7 +178,7 @@ IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r) {
         device->vtbl = &table;
         device->internal = &DeviceArray.idata[DeviceArray.top++];
 
-        sampler_t *s = &((IData*)DeviceArray.device->internal)->Sampler;
+        sampler_t *s = &((IData*)device->internal)->Sampler;
         glCreateSamplers(1, &s->nearest);
         glCreateSamplers(1, &s->linear);
         glSamplerParameteri(s->nearest, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

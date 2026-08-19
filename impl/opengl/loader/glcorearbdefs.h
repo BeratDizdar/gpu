@@ -123,6 +123,7 @@
 
 /* gl types */
 #define GL_FLOAT                          0x1406
+#define GL_UNSIGNED_BYTE                  0x1401
 
 /* glSamplerParameteri */
 #define GL_TEXTURE_MAG_FILTER             0x2800
