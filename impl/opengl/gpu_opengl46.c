@@ -112,8 +112,9 @@ static void impl__Draw(struct IGPUDevice *self, int type, int count) {
         uint32_t topology;
         if (type == 0) topology = GL_POINTS;
         else if (type == 1) topology = GL_LINES;
-        else if (type == 2) topology = GL_TRIANGLES;
-        else if (type == 3) topology = GL_TRIANGLE_STRIP;
+        else if (type == 2) topology = GL_LINE_STRIP;
+        else if (type == 3) topology = GL_TRIANGLES;
+        else if (type == 4) topology = GL_TRIANGLE_STRIP;
         else return;
         glDrawArraysInstancedBaseInstance(topology, 0, count, 1, 0);
     }

@@ -69,8 +69,8 @@ struct IGPUDevice {
     // planlayıp dışarıya bunu söyleyebilir
     // count parametresi aslında vertex_id gibi olacak
     // type:
-    // [0, 2]   = {POINTS, LINES, TRIANGLES}
-    // (2, ???] = impl extension
+    // [0, 4]   = {POINT, LINE, LINE_STRIP, TRIANGLE, TRIANGLE_STRIP}
+    // (4, ???] = impl extension
     virtual void Draw(int type, int count) = 0;
     virtual void Compute(int num_groups_x, int num_groups_y, int num_groups_z) = 0;
     virtual void MemoryBarrier() = 0;

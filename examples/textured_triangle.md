@@ -89,3 +89,5 @@ int main() {
     return 0;
 }
 ```
+
+![meymun](textured_triangle.png)
