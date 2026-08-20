@@ -1,6 +1,6 @@
 #include "../../gpu.h"
 #define GLUTILS_IMPL
-#include "loader/miniglcorearb.h"
+#include "miniglcorearb-main/miniglcorearb.h"
 #include "gpu_gl_defs.h"
 
 
