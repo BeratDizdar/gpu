@@ -8,8 +8,6 @@ endef
 first:
 	@echo "make [install/mtl/gl]"
 
-install:
-	$(MAKE) -C depen
-
 gl:
+	$(MAKE) -C depen
 	$(call __build,gcc,opengl/gl_gpu.c)
