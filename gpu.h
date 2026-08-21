@@ -48,13 +48,13 @@ BUFFER -------------------------------------------------------------------------
     Belirli veri slotuna yeni veri ekle
     Yeni veri eklemek eskisinin temizlenmesi anlamına gelir
 - UpdateBuffer -> Belirli veri slotundaki veriyi güncelle
-- BindBuffer -> Belirli doku slotunu donanım için aktif birime koyar
+- BindBuffer -> Belirli veri slotunu donanım için aktif birime koyar
 
 PIPELINE -----------------------------------------------------------------------
     Shader program işleme kısmını tek bir pipeline yapısında planladım. Hangi 
 program tipini kullanacağınız implementasyona kalsa bile benim tercihim, verilen
 `shader_count`a göre comp veya vert+frag şeklinde işlenmesi yönünde.
-    Nihai çözüm için aklımda bir "ShaderIR" yaratmak. Fakat şimdilik böyle 
+    Nihai çözüm için aklımda bir "ShaderIR" yaratmak var. Fakat şimdilik böyle 
 bırakıyorum. :P
 
 - NewPipeline:
@@ -91,15 +91,14 @@ FRAMEBUFFER --------------------------------------------------------------------
 typedef struct { // devamını düşüneceğim bir ara
     impl_diff void*(*get_proc_address)(const char*);
     impl_diff void *native_window;
-    guaranteed(256) uint16_t min_buffer_objects; // acaba bunlara max mı desem?
-    guaranteed(256) uint16_t min_texture_objects;
-    guaranteed(256) uint16_t min_pipeline_objects;
+    guaranteed(256) uint16_t max_buffer_objects;
+    guaranteed(256) uint16_t max_texture_objects;
+    guaranteed(256) uint16_t max_pipeline_objects;
 } device_request_t;
 
 #ifdef __cplusplus
 
 struct IGPUDevice {
-    
     virtual const char *QueryProps() = 0;
     virtual void Scissor(int x, int y, int w, int h) = 0;
     virtual void Viewport(int x, int y, int w, int h) = 0;
@@ -111,7 +110,7 @@ struct IGPUDevice {
     virtual void BindBuffer(int id, int slot) = 0;
     virtual void NewPipeline(int id, int shader_count, void **shader) = 0;
     virtual void CurrentPipeline(int id) = 0;
-    virtual void Draw(int type, int count) = 0;
+    virtual void Draw(int type, int vertex_count, int first_vertex, int instance_count, int first_instance) = 0;
     virtual void Compute(int num_groups_x, int num_groups_y, int num_groups_z) = 0;
     virtual void MemoryBarrier() = 0;
     virtual void Present() = 0;
@@ -135,7 +134,7 @@ typedef struct {
     void (*BindBuffer)(struct IGPUDevice *self, int id, int slot);
     void (*NewPipeline)(struct IGPUDevice *self, int id, int shader_count, void **shader);
     void (*CurrentPipeline)(struct IGPUDevice *self, int id);
-    void (*Draw)(struct IGPUDevice *self, int type, int count);
+    void (*Draw)(struct IGPUDevice *self, int type, int vertex_count, int first_vertex, int instance_count, int first_instance);
     void (*Compute)(struct IGPUDevice *self, int num_groups_x, int num_groups_y, int num_groups_z);
     void (*MemoryBarrier)(struct IGPUDevice *self);
     void (*Present)(struct IGPUDevice *self);

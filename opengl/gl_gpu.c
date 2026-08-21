@@ -3,6 +3,7 @@
 #define GLUTILS_IMPL
 #include <depen/miniglcorearb-main/miniglcorearb.h>
 
+#define GPUAPI __declspec(dllexport)
 
 //##############################################################################
 //==============================================================================
@@ -106,7 +107,7 @@ static void impl__CurrentPipeline(struct IGPUDevice *self, int id) {
     ((IData*)self->internal)->Pipeline.current = id;
 }
 
-static void impl__Draw(struct IGPUDevice *self, int type, int count) {
+static void impl__Draw(struct IGPUDevice *self, int type, int vertex_count, int first_vertex, int instance_count, int first_instance) {
     pipeline_t *p = &((IData*)self->internal)->Pipeline;
     if (p->vert[p->current] != 0 && p->frag[p->current] != 0) {
         uint32_t topology;
@@ -116,7 +117,7 @@ static void impl__Draw(struct IGPUDevice *self, int type, int count) {
         else if (type == 3) topology = GL_TRIANGLES;
         else if (type == 4) topology = GL_TRIANGLE_STRIP;
         else return;
-        glDrawArraysInstancedBaseInstance(topology, 0, count, 1, 0);
+        glDrawArraysInstancedBaseInstance(topology, first_vertex, vertex_count, instance_count, first_instance);
     }
     else {
         return;
@@ -171,7 +172,7 @@ static struct {
     uint32_t top;
 } DeviceArray;
 
-IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r) {
+GPUAPI IGPUDevice *GPU_GetDefaultDevice(optional const device_request_t *r) {
     gluLoadLibrary(r->get_proc_address);
     gluBindDummyVAO();
     glEnable(GL_BLEND);

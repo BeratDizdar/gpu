@@ -1,3 +1,5 @@
 depen/*
 !depen/makefile
-impl/opengl/miniglcorearb-main
+*.dll
+*.a
+*.o
