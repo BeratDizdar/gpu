@@ -1,7 +1,7 @@
-#include "../../gpu.h"
+#include <opengl/gl_gpu_defs.h>
+#include <gpu.h>
 #define GLUTILS_IMPL
-#include "miniglcorearb-main/miniglcorearb.h"
-#include "gpu_gl_defs.h"
+#include <depen/miniglcorearb-main/miniglcorearb.h>
 
 
 //##############################################################################

@@ -1,5 +1,5 @@
-#include "gpu_mtl_defs.h"
-#import "../../gpu.h"
+#include <metal/mtl_gpu_defs.h>
+#include <gpu.h>
 
 static id<MTLDevice> device;
 static id<MTLCommandQueue> queue;

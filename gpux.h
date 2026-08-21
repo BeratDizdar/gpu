@@ -15,7 +15,7 @@ void *GPUX_LoadShaderToMemory(const char *path);
 
 #define STBI_NO_SIMD
 #define STB_IMAGE_IMPLEMENTATION
-#include "depen/stb_image.h"
+#include <depen/stb_image.h>
 #include <stdio.h>
 #include <stdlib.h>
 
